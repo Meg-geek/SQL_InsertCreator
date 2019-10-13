@@ -5,33 +5,36 @@ import insertWriters.InsertType;
 import insertWriters.InsertWriter;
 import insertWriters.MyInsertFileWriter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ConsoleUserManager implements UserManager {
+public class FileUserManager implements UserManager {
     private Scanner in;
     private InsertFileWriter writer;
     private static final String EXIT_WORD = "exit";
     private static final String END_WORD = "end";
 
-    public ConsoleUserManager(){
-        in = new Scanner(System.in);
+    public FileUserManager(File file) throws FileNotFoundException {
+        in = new Scanner(file);
     }
 
     @Override
     public void start() throws IOException {
-        introduce();
         writer = new MyInsertFileWriter();
         if(!setFile()){
             writer.closeFile();
             return;
         }
        createInserts();
+        writer.closeFile();
     }
 
     private void createInserts() throws IOException{
+       // System.out.println("Write default or usual");
         String line = in.nextLine();
         while(!line.equals(EXIT_WORD)){
             if(line.equals("usual")){
@@ -40,6 +43,7 @@ public class ConsoleUserManager implements UserManager {
             if(line.equals("default")){
                 createDefault();
             }
+           // System.out.println("Write default or usual");
             line = in.nextLine();
         }
     }
@@ -49,12 +53,12 @@ public class ConsoleUserManager implements UserManager {
         if(tableName == null){
             return;
         }
-        System.out.println("write columns, new line for new column. write end to start write values");
+        //System.out.println("write columns, new line for new column. write end to start write values");
         List<String> columnsList = getParametersList();
         if(columnsList == null){
             return;
         }
-        System.out.println("write values, new line for new column. write end to start write values");
+        //System.out.println("write values, new line for new column. write end to start write values");
         List<String> valuesList = getParametersList();
         if(valuesList == null){
             return;
@@ -77,7 +81,7 @@ public class ConsoleUserManager implements UserManager {
 
 
     private List<String> getTableName(){
-        System.out.println("write table name, please");
+        //System.out.println("write table name, please");
         String table = in.nextLine();
         if(table.equals(EXIT_WORD)){
             return null;
@@ -88,12 +92,13 @@ public class ConsoleUserManager implements UserManager {
     }
 
     private void createDefault() throws IOException{
-        System.out.println("How many default inserts do you want?");
-        int amount = in.nextInt();
+        //System.out.println("How many default inserts do you want?");
+        int amount = Integer.parseInt(in.nextLine());
         List<String> tableName = getTableName();
         if(tableName == null){
             return;
         }
+       // System.out.println("table name " + tableName.get(0));
         for(int i = 0; i < amount; i++){
             writer.write(InsertType.DEFAULT_INSERT, tableName);
         }
@@ -107,7 +112,7 @@ public class ConsoleUserManager implements UserManager {
         }
         return (!line.equals(EXIT_WORD));
     }
-
+/*
     private void introduce(){
         System.out.println("Hello, welcome to SQL insert creator!");
         System.out.println("how to use this creator:");
@@ -116,4 +121,6 @@ public class ConsoleUserManager implements UserManager {
         System.out.println("First, you need to write file where you will get all your commands");
         System.out.println("Print " + EXIT_WORD + " to exit");
     }
+
+ */
 }

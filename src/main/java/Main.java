@@ -1,17 +1,13 @@
-import generators.DefaultInsertGenerator;
-import generators.InsertGenerator;
-import generators.UsualInsertGenerator;
-import userManager.ConsoleUserManager;
+import userManager.FileUserManager;
 import userManager.UserManager;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args){
-        UserManager userManager = new ConsoleUserManager();
         try{
+            UserManager userManager = new FileUserManager(new File("src" + File.separator + "descr.txt"));
             userManager.start();
         } catch (IOException ex){
             ex.printStackTrace();
