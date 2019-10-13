@@ -5,7 +5,6 @@ import generators.InsertGenerator;
 import generators.UsualInsertGenerator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +31,12 @@ public class MyInsertFileWriter implements InsertFileWriter {
         if(insert == null){
             return false;
         }
-        fileWriter.write(insert);
+        try{
+            fileWriter.write(insert);
+        } catch (IOException ex){
+            closeFile();
+            throw ex;
+        }
         return true;
     }
 
@@ -44,6 +48,11 @@ public class MyInsertFileWriter implements InsertFileWriter {
         }
         fileWriter = new FileWriter(file);
         return true;
+    }
+
+    @Override
+    public void closeFile() throws IOException{
+        fileWriter.close();
     }
 
     private boolean checkFile(File file) throws IOException {
